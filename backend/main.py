@@ -98,47 +98,47 @@ async def suggest_role(file: UploadFile = File(...)):
 app.mount("/api", api)
 
 
-# ----------------- FRONTEND ROUTING (FINAL FIX) -----------------
-from starlette.responses import FileResponse
-from starlette.requests import Request
+# # ----------------- FRONTEND ROUTING (FINAL FIX) -----------------
+# from starlette.responses import FileResponse
+# from starlette.requests import Request
 
-frontend_path = os.path.join(os.path.dirname(__file__), "../frontend/dist")
+# frontend_path = os.path.join(os.path.dirname(__file__), "../frontend/dist")
 
-# Serve static React build (JS, CSS, assets)
-if os.path.exists(os.path.join(frontend_path, "assets")):
-    app.mount("/assets", StaticFiles(directory=os.path.join(frontend_path, "assets")), name="assets")
+# # Serve static React build (JS, CSS, assets)
+# if os.path.exists(os.path.join(frontend_path, "assets")):
+#     app.mount("/assets", StaticFiles(directory=os.path.join(frontend_path, "assets")), name="assets")
 
-@app.middleware("http")
-async def spa_fallback(request: Request, call_next):
-    """
-    Middleware that serves React index.html for any route not under /api.
-    This prevents 404s when reloading SPA routes like /job-skills or /analyze.
-    """
-    # Handle API routes normally
-    if request.url.path.startswith("/api"):
-        return await call_next(request)
+# @app.middleware("http")
+# async def spa_fallback(request: Request, call_next):
+#     """
+#     Middleware that serves React index.html for any route not under /api.
+#     This prevents 404s when reloading SPA routes like /job-skills or /analyze.
+#     """
+#     # Handle API routes normally
+#     if request.url.path.startswith("/api"):
+#         return await call_next(request)
 
-    # Try to serve normally
-    response = await call_next(request)
-    if response.status_code == 404:
-        index_file = os.path.join(frontend_path, "index.html")
-        if os.path.exists(index_file):
-            return FileResponse(index_file)
-    return response
-
-
-# Serve built React files statically under root
-if os.path.exists(frontend_path):
-    app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+#     # Try to serve normally
+#     response = await call_next(request)
+#     if response.status_code == 404:
+#         index_file = os.path.join(frontend_path, "index.html")
+#         if os.path.exists(index_file):
+#             return FileResponse(index_file)
+#     return response
 
 
-@app.get("/{full_path:path}")
-async def serve_frontend(full_path: str):
-    """Fallback to index.html for client-side routing."""
-    index_file = os.path.join(frontend_path, "index.html")
-    if os.path.exists(index_file):
-        return FileResponse(index_file)
-    return JSONResponse(status_code=404, content={"error": "Frontend not built"})
+# # Serve built React files statically under root
+# if os.path.exists(frontend_path):
+#     app.mount("/", StaticFiles(directory=frontend_path, html=True), name="frontend")
+
+
+# @app.get("/{full_path:path}")
+# async def serve_frontend(full_path: str):
+#     """Fallback to index.html for client-side routing."""
+#     index_file = os.path.join(frontend_path, "index.html")
+#     if os.path.exists(index_file):
+#         return FileResponse(index_file)
+#     return JSONResponse(status_code=404, content={"error": "Frontend not built"})
 
 import os
 
