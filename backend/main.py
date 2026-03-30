@@ -140,3 +140,9 @@ async def serve_frontend(full_path: str):
         return FileResponse(index_file)
     return JSONResponse(status_code=404, content={"error": "Frontend not built"})
 
+import os
+
+if __name__ == "__main__":
+    import uvicorn
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run("backend.main:app", host="0.0.0.0", port=port)
