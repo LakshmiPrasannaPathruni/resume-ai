@@ -1,3 +1,5 @@
+import nltk
+nltk.download('stopwords')
 import os
 import spacy
 from spacy.matcher import Matcher
