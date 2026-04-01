@@ -6,6 +6,8 @@ import { Label } from "@/components/ui/label";
 import { Upload, FileText, Loader2, Sparkles, CheckCircle2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 const ResumeAnalyzer = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -33,11 +35,10 @@ const ResumeAnalyzer = () => {
     formData.append("file", file);
 
     try {
-     const response = await fetch("/api/suggest-role/", {
-     method: "POST",
-     body: formData,
-     });
-
+      const response = await fetch(`${API_BASE}/api/suggest-role/`, {
+        method: "POST",
+        body: formData,
+      });
 
       if (!response.ok) throw new Error("Failed to analyze resume");
 
@@ -66,6 +67,7 @@ const ResumeAnalyzer = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--primary)/0.05),transparent_70%)]"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
+
           {/* Header */}
           <div className="text-center mb-16 animate-fade-in">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-5 py-2.5 rounded-full text-sm font-medium mb-6 backdrop-blur-sm border border-primary/20 hover:scale-105 transition-transform">
@@ -81,6 +83,7 @@ const ResumeAnalyzer = () => {
           </div>
 
           <div className="grid lg:grid-cols-2 gap-10 items-start">
+
             {/* Upload Section */}
             <Card className="border-2 hover:border-primary transition-all duration-300 shadow-[var(--shadow-soft)] hover:shadow-[var(--shadow-hover)] animate-fade-in bg-card/50 backdrop-blur-sm">
               <CardHeader className="space-y-3">
@@ -152,6 +155,7 @@ const ResumeAnalyzer = () => {
                   </p>
                 ) : (
                   <div className="space-y-6">
+
                     {/* Extracted Skills */}
                     {result.skills_extracted && (
                       <div>
@@ -193,18 +197,8 @@ const ResumeAnalyzer = () => {
                           </thead>
                           <tbody>
                             {result.suggested_roles.main_suggestions.map(
-                              (
-                                job: {
-                                  job_title: string;
-                                  match_score: number;
-                                  insight: string;
-                                },
-                                i: number
-                              ) => (
-                                <tr
-                                  key={i}
-                                  className="border-t border-border/40 hover:bg-muted/20 transition"
-                                >
+                              (job: any, i: number) => (
+                                <tr key={i} className="border-t border-border/40 hover:bg-muted/20 transition">
                                   <td className="px-3 py-2">{job.job_title}</td>
                                   <td className="px-3 py-2 font-medium text-primary">
                                     {job.match_score}%
@@ -227,23 +221,23 @@ const ResumeAnalyzer = () => {
                           Other Recommended Roles
                         </h3>
                         <div className="flex flex-wrap gap-2">
-                          {result.suggested_roles.secondary_exploration.map(
-                            (role: string, index: number) => (
-                              <span
-                                key={index}
-                                className="bg-accent/10 text-accent text-sm font-medium px-3 py-1 rounded-full"
-                              >
-                                {role}
-                              </span>
-                            )
-                          )}
+                          {result.suggested_roles.secondary_exploration.map((role: string, index: number) => (
+                            <span
+                              key={index}
+                              className="bg-accent/10 text-accent text-sm font-medium px-3 py-1 rounded-full"
+                            >
+                              {role}
+                            </span>
+                          ))}
                         </div>
                       </div>
                     )}
+
                   </div>
                 )}
               </CardContent>
             </Card>
+
           </div>
         </div>
       </div>

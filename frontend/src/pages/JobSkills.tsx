@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label";
 import { Loader2, CheckCircle2, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
+const API_BASE = import.meta.env.VITE_API_URL;
+
 const JobSkills = () => {
   const [jobTitles, setJobTitles] = useState<string[]>([]);
   const [selectedJob, setSelectedJob] = useState<string>("");
@@ -16,7 +18,7 @@ const JobSkills = () => {
   useEffect(() => {
     const fetchTitles = async () => {
       try {
-        const res = await fetch("/api/job-titles/");
+        const res = await fetch(`${API_BASE}/api/job-titles/`);
         const data = await res.json();
         setJobTitles(data.job_titles || []);
       } catch (err) {
@@ -38,7 +40,9 @@ const JobSkills = () => {
     setSkills(null);
 
     try {
-      const res = await fetch(`/api/job-skills?title=${encodeURIComponent(title)}`);
+      const res = await fetch(
+        `${API_BASE}/api/job-skills?title=${encodeURIComponent(title)}`
+      );
       const data = await res.json();
 
       if (data.error) {
@@ -72,6 +76,7 @@ const JobSkills = () => {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--accent)/0.05),transparent_70%)]"></div>
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
+          
           {/* Header */}
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-5 py-2.5 rounded-full text-sm font-medium mb-6 border border-primary/20">
