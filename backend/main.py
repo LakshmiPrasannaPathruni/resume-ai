@@ -95,3 +95,4 @@ async def suggest_role(file: UploadFile = File(...)):
         "skills_extracted": skills,
         "suggested_roles": suggestions,
     }
+
